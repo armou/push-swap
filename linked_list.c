@@ -1,8 +1,5 @@
 #include "linked_list.h"
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
+
 
 
 void print_list(node_list_t* head) {
@@ -11,7 +8,8 @@ void print_list(node_list_t* head) {
     print_list = head;
     // printf("attempting print\n");
     while (print_list != NULL) {
-        printf("This list value is : %d\n", print_list->value);
+        printf("VALUE is : %d\n", print_list->value);
+        // printf("INDEX is : %d\n", print_list->index);
         print_list = print_list->next;
     }
 }
@@ -28,7 +26,7 @@ node_list_t* push_list(node_list_t* head, int value) {
             ;
         }
         current->next->value = value;
-        current->next->index = current->index++;
+        // current->next->index = current->index++;
         current->next->prev = current;
         current->next->isHead = 0;
         // if (final == 1) {prev
@@ -80,39 +78,82 @@ void swap_node(node_list_t* head){
 }
 
 
-void rotate_node(node_list_t* head){
+void rotate_node(node_list_t** head){
     node_list_t* current;
-    int             tmp;
+    // int             tmp;
 
     printf("--- Rotating values ---\n");
-    current = head;
+    current = (*head);
     if (current && current->next) {
-        while (current && current->next) {
-            tmp = current->value;
-            current->value = current->next->value;
-            current = current->next;
-        }
-        current->value = tmp;
+        (*head) = (*head)->next;
     }
+    // if ((*head)->next) {
+    //     return head->next;
+    // }
+    // return head;
+    // current = head;
+    // if (current && current->next) {
+    //     tmp = current->value;
+    //     printf("current value is %d\n", current->value);
+    //     while (current && current->next) {
+    //         current->value = current->next->value;
+    //         current = current->next;
+    //     }
+    //     current->value = tmp;
+    // }
 }
 
-void reverse_rotate_node(node_list_t* head) {
-    node_list_t* current;
-    int             tmp;
+void reverse_rotate_node(node_list_t** head) {
+    node_list_t*    current;
+    node_list_t*    swap;
+    // int             tmp;
+    // int             count;
 
     printf("--- Reverse Rotating values ---\n");
-    current = head;
-    if (current) {
-        while (current->next) {
-            current = current->next;
-        }
-        tmp = current->value;
-        while (current->prev) {
-            current->value = current->prev->value;
-            current = current->prev;
-        }
-        head->value = tmp;
+
+    current = (*head);
+    if (current && current->prev) {
+        swap = (*head)->prev;
+        (*head) = (*head)->prev;
     }
+    (*head)->next = current;
+    if (swap->prev) {
+        (*head)->prev = swap;
+    }
+    // if (!head) {
+    //     return head;
+    // }
+    // if (head->prev) {
+    //     return head->prev;
+    // }
+    // count = 1;
+    // if (current->next) {
+    //     current = current->next;
+    //     // while (current->next) {
+    //     //     current = current->next;
+    //     // }
+    //     swap = current;
+    //     tmp = current->value;
+    //     current->value = current->prev->value;
+    //     current = current->next;
+    //     while (current->index != 0) {
+    //         // tmp2 = current->next->value;
+    //         current->next->value = current->value;
+    //         current->value = tmp;
+    //         current = current->next;
+    //     }
+        
+    //     dprintf(1, "tmp value is %d", tmp);
+
+    //     // while (current->prev) {
+    //     //     current->value = current->prev->value;
+    //     //     current = current->prev;
+    //     //     dprintf(1, "infinitelooop");
+
+    //     // }
+    //     head->value = tmp;
+    // }
+    // return head;
 }
 
 node_list_t* push_src_to_dst(node_list_t** src, node_list_t* dst) {
@@ -131,11 +172,12 @@ node_list_t* push_src_to_dst(node_list_t** src, node_list_t* dst) {
         // (*src)->next->prev = NULL;
         while ((*src)->next != NULL) {
             (*src)->next->index--;
-            (*src)->next->isHead = 1;
             (*src) = (*src)->next;
         }
         if (tmp->next) {
-            // dprintf(1, "debug1\n");
+            tmp->next->isHead = 1;
+            tmp->next->prev = tmp->prev;
+            dprintf(1, "debug1\n");
             (*src) = tmp->next;
         } else {
             // printf("debug2\n");
@@ -163,11 +205,12 @@ node_list_t* push_src_to_dst(node_list_t** src, node_list_t* dst) {
     // printf("Our node index is : %d\nOur node value is : %d\n", (*src)->index, (*src)->value);
 }
 
-int list_is_sorted(node_list_t* head) {
-    node_list_t* current;
+int list_is_sorted(node_list_t* current) {
+    // node_list_t* current;
 
-    current = head;
-    while (current->next) {
+    // current = head;
+    while (current && current->next) {
+
         if(current->next->value < current->value) {
             return 0;
         }
@@ -196,9 +239,9 @@ void init_list() {
     print_list(head);
     swap_node(head);
     print_list(head);
-    rotate_node(head);
+    rotate_node(&head);
     print_list(head);
-    reverse_rotate_node(head);
+    reverse_rotate_node(&head);
     print_list(head);
     list_b = push_src_to_dst(&head, list_b);
     list_b = push_src_to_dst(&head, list_b);
@@ -226,12 +269,11 @@ void init_linked_list(node_list_t** a) {
 }
 
 int read_and_check(node_list_t* a, node_list_t* b) {
-    while (1) {
+    while (!list_is_sorted(a)) {
         char s[100];
         fgets( s, 10, stdin);
         printf("\n\n --- NEW COMMAND ---\n");
         printf("input value is %s\n", s);
-        // printf("length of s is %d\n", strlen(s));
         if (strncmp(s, "sa", 2) == 0 && strlen(s) == 3) {
             printf("sa command detected\n");
             swap_node(a);
@@ -250,31 +292,32 @@ int read_and_check(node_list_t* a, node_list_t* b) {
             swap_node(b);
         } else if (strncmp(s, "ra", 2) == 0 && strlen(s) == 3) {
             printf("ra command detected\n");
-            rotate_node(a);
+            rotate_node(&a);
         } else if (strncmp(s, "rb", 2) == 0 && strlen(s) == 3) {
             printf("rb command detected\n");
-            rotate_node(b);
+            rotate_node(&b);
         } else if (strncmp(s, "rr", 2) == 0 && strlen(s) == 3) {
             printf("rr command detected\n");
-            rotate_node(a);
-            rotate_node(b);
+            rotate_node(&a);
+            rotate_node(&b);
         } else if (strncmp(s, "rra", 3) == 0 && strlen(s) == 4) {
             printf("rra command detected\n");
-            reverse_rotate_node(a);
+            reverse_rotate_node(&a);
         } else if (strncmp(s, "rrb", 3) == 0 && strlen(s) == 4) {
             printf("rrb command detected\n");
-            reverse_rotate_node(b);
+            reverse_rotate_node(&b);
         } else if (strncmp(s, "rrr", 3) == 0 && strlen(s) == 4) {
             printf("rrr command detected\n");
-            reverse_rotate_node(a);
-            reverse_rotate_node(b);
+            reverse_rotate_node(&a);
+            reverse_rotate_node(&b);
         }
         printf("Print List A\n");
         print_list(a);
         printf("Print List B\n");
         print_list(b);
     }
-     
+    printf("---   LIST IS SORTED   ---\n");
+    printf("---   Terminating program   ---\n"); 
 }
 
 int main(int argc, char **argv) {
@@ -287,6 +330,7 @@ int main(int argc, char **argv) {
     tail = NULL;
     head = NULL;
     swap = NULL;
+    // ft_putchar('a');
     if (argc < 2)
         return 0;
     init_linked_list(&tail);
@@ -294,15 +338,22 @@ int main(int argc, char **argv) {
     // init_linked_list(&swap);
     
     head = tail;
-    print_list(tail);
+    // print_list(tail);
     while (argv[i]) {
-        printf("argument %d = %d\n", i, atoi(argv[i]));
+        // printf("argument %d = %d\n", i, atoi(argv[i]));
         // head = push_list_reverse(head, atoi(argv[i]), i == argc - 1 ? 1 : 0);
         tail = push_list(tail, atoi(argv[i]));
+        tail->index = i - 1;
         i++;
     }
     print_list(head);
-    read_and_check(head, swap);
-    // print_list(tail);
+    head->prev = tail;
+    
+    set_pivot(head, swap);
+    // printf("number of elements = %d\n", tail->value);
+    // printf("number of elements = %d\n", head->index);
+    // printf("number of arguments = %d\n", argc);
+    // read_and_check(head, swap);
+    // print_list(head);
     return 0;
 }
