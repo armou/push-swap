@@ -7,6 +7,7 @@ void split_list(int node) {
 
 void set_pivot(node_list_t* a, node_list_t* b) {
     node_list_t* head;
+    node_list_t* tail;
     // node_list_t* a;
     // node_list_t* b;
     int pivot;
@@ -15,26 +16,32 @@ void set_pivot(node_list_t* a, node_list_t* b) {
     // a = head;
     // dprintf(1, "debug0");
     while (!list_is_sorted(a) || b != NULL) {
+        tail = a;
+        while (tail->next) {
+            tail = tail->next;
+        }
         dprintf(1, "start of loop\n\n");
         dprintf(1, "current = %d\n", a->value);
         dprintf(1,  "next = %d\n", a->next->value);
-        dprintf(1, "prev = %d\n", a->prev->value);
+        dprintf(1, "prev = %d\n", tail->value);
         if (a->value > a->next->value) {
-            // dprintf(1, "debug1");
+            dprintf(1, "debug1");
 
             swap_node(a);
             printf("sa\n");
         //             dprintf(1, "current = %d\n", a->value);
         // dprintf(1,  "next = %d\n", a->next->value);
         // dprintf(1, "prev = %d\n", a->prev->value);
-        } else if (a->value > a->prev->value) {
-        //     dprintf(1, "debug2");
+        } else if (a->value > tail->value) {
+            dprintf(1, "debug2");
         //             dprintf(1, "current = %d\n", a->value);
         // dprintf(1,  "next = %d\n", a->next->value);
         // dprintf(1, "prev = %d\n", a->prev->value);
             reverse_rotate_node(&a);
             printf("rra\n");
-        } else if (list_is_sorted(a)) {
+        } else if (list_is_sorted(a) && b != NULL) {
+            dprintf(1, "debug3");
+
             if (a->value > b->value) {
                 a = push_src_to_dst(&b, a);
                 printf("pa\n");
@@ -43,7 +50,7 @@ void set_pivot(node_list_t* a, node_list_t* b) {
                 printf("rb\n");
             }
         } else {
-            // dprintf(1, "debug3");
+            dprintf(1, "debug4");
 
             b = push_src_to_dst(&a, b);
             printf("pb\n");

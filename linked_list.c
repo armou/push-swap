@@ -80,13 +80,26 @@ void swap_node(node_list_t* head){
 
 void rotate_node(node_list_t** head){
     node_list_t* current;
+    node_list_t* swap;
     // int             tmp;
 
     printf("--- Rotating values ---\n");
     current = (*head);
-    if (current && current->next) {
-        (*head) = (*head)->next;
-    }
+    // if (current && current->next) {
+    //     (*head) = (*head)->next;
+    // }
+    if (current->next)
+        current = current->next;
+    else
+        return;
+    swap = current->prev;
+    while (current->next)
+        current = current->next;
+    current->next = (*head);
+    (*head)->prev = current;
+    (*head) = swap->next;
+    (*head)->prev = NULL;
+    swap->next = NULL;
     // if ((*head)->next) {
     //     return head->next;
     // }
@@ -111,18 +124,29 @@ void reverse_rotate_node(node_list_t** head) {
 
     printf("--- Reverse Rotating values ---\n");
 
+    if (!head) {
+        return;
+    }
     current = (*head);
-    if (current && current->prev) {
-        swap = (*head)->prev;
-        (*head) = (*head)->prev;
+    while (current->next) {
+        current = current->next;
     }
-    (*head)->next = current;
-    if (swap->prev) {
-        (*head)->prev = swap;
-    }
-    // if (!head) {
-    //     return head;
+    swap = (*head);
+    current->prev->next = (*head);
+    // (*head)->next = swap;
+    swap->prev = current;
+    (*head) = swap;
+    (*head)->prev = NULL;
+
+    // if (current && current->prev) {
+    //     swap = (*head)->prev;
+    //     (*head) = (*head)->prev;
     // }
+    // (*head)->next = current;
+    // if (swap->prev) {
+    //     (*head)->prev = swap;
+    // }
+
     // if (head->prev) {
     //     return head->prev;
     // }
@@ -269,7 +293,7 @@ void init_linked_list(node_list_t** a) {
 }
 
 int read_and_check(node_list_t* a, node_list_t* b) {
-    while (!list_is_sorted(a)) {
+    while (!list_is_sorted(a) || b != NULL) {
         char s[100];
         fgets( s, 10, stdin);
         printf("\n\n --- NEW COMMAND ---\n");
@@ -347,13 +371,13 @@ int main(int argc, char **argv) {
         i++;
     }
     print_list(head);
-    head->prev = tail;
+    head->prev = NULL;
     
-    set_pivot(head, swap);
+    // set_pivot(head, swap);
     // printf("number of elements = %d\n", tail->value);
     // printf("number of elements = %d\n", head->index);
     // printf("number of arguments = %d\n", argc);
-    // read_and_check(head, swap);
+    read_and_check(head, swap);
     // print_list(head);
     return 0;
 }
