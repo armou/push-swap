@@ -133,10 +133,10 @@ node_list_t* push_src_to_dst(node_list_t** src, node_list_t* dst) {
         if (tmp->next) {
             tmp->next->isHead = 1;
             tmp->next->prev = tmp->prev;
-            dprintf(1, "debug1\n");
+            // dprintf(1, "debug1\n");
             (*src) = tmp->next;
         } else {
-            printf("debug2\n");
+            // printf("debug2\n");
             (*src) = NULL;
         }
         free(tmp);
@@ -152,6 +152,8 @@ node_list_t* push_src_to_dst(node_list_t** src, node_list_t* dst) {
                 dst->index++;
                 dst = dst->next;
             }
+        } else {
+            current->next = NULL;
         }
         return current;
     } else {
@@ -297,11 +299,11 @@ int main(int argc, char **argv) {
     print_list(head);
     head->prev = NULL;
     
-    // set_pivot(head, swap);
+    set_pivot(head, swap);
     // printf("number of elements = %d\n", tail->value);
     // printf("number of elements = %d\n", head->index);
     // printf("number of arguments = %d\n", argc);
-    read_and_check(head, swap);
+    // read_and_check(head, swap);
     // print_list(head);
     return 0;
 }
