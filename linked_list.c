@@ -9,7 +9,7 @@ void print_list(node_list_t* head) {
     // printf("attempting print\n");
     while (print_list != NULL) {
         printf("VALUE is : %d\n", print_list->value);
-        printf("INDEX is : %d\n", print_list->index);
+        // printf("INDEX is : %d\n", print_list->index);
         print_list = print_list->next;
     }
 }
@@ -81,18 +81,11 @@ void swap_node(node_list_t* head){
 void rotate_node(node_list_t** head){
     node_list_t* current;
     node_list_t* swap;
-    // int             tmp;
 
     printf("--- Rotating values ---\n");
-    current = (*head);
-    // if (current && current->next) {
-    //     (*head) = (*head)->next;
-    // }
-    if (current->next)
-        current = current->next;
-    else
+    swap = current = (*head);
+    if (!current || !current->next)
         return;
-    swap = current->prev;
     while (current->next)
         current = current->next;
     current->next = (*head);
@@ -100,84 +93,24 @@ void rotate_node(node_list_t** head){
     (*head) = swap->next;
     (*head)->prev = NULL;
     swap->next = NULL;
-    // if ((*head)->next) {
-    //     return head->next;
-    // }
-    // return head;
-    // current = head;
-    // if (current && current->next) {
-    //     tmp = current->value;
-    //     printf("current value is %d\n", current->value);
-    //     while (current && current->next) {
-    //         current->value = current->next->value;
-    //         current = current->next;
-    //     }
-    //     current->value = tmp;
-    // }
 }
 
 void reverse_rotate_node(node_list_t** head) {
     node_list_t*    current;
     node_list_t*    swap;
-    // int             tmp;
-    // int             count;
 
     printf("--- Reverse Rotating values ---\n");
-
-    if (!head) {
-        return;
-    }
     current = (*head);
-    while (current->next) {
+    if (!current || !current->next)
+        return;
+    while (current->next)
         current = current->next;
-    }
-    swap = (*head);
-    current->prev->next = (*head);
-    // (*head)->next = swap;
-    swap->prev = current;
+    swap = current;
+    swap->next = (*head);
+    current->prev->next = NULL;
+    (*head)->prev = swap;
     (*head) = swap;
     (*head)->prev = NULL;
-
-    // if (current && current->prev) {
-    //     swap = (*head)->prev;
-    //     (*head) = (*head)->prev;
-    // }
-    // (*head)->next = current;
-    // if (swap->prev) {
-    //     (*head)->prev = swap;
-    // }
-
-    // if (head->prev) {
-    //     return head->prev;
-    // }
-    // count = 1;
-    // if (current->next) {
-    //     current = current->next;
-    //     // while (current->next) {
-    //     //     current = current->next;
-    //     // }
-    //     swap = current;
-    //     tmp = current->value;
-    //     current->value = current->prev->value;
-    //     current = current->next;
-    //     while (current->index != 0) {
-    //         // tmp2 = current->next->value;
-    //         current->next->value = current->value;
-    //         current->value = tmp;
-    //         current = current->next;
-    //     }
-        
-    //     dprintf(1, "tmp value is %d", tmp);
-
-    //     // while (current->prev) {
-    //     //     current->value = current->prev->value;
-    //     //     current = current->prev;
-    //     //     dprintf(1, "infinitelooop");
-
-    //     // }
-    //     head->value = tmp;
-    // }
-    // return head;
 }
 
 node_list_t* push_src_to_dst(node_list_t** src, node_list_t* dst) {
