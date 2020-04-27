@@ -9,7 +9,7 @@ void print_list(node_list_t* head) {
     // printf("attempting print\n");
     while (print_list != NULL) {
         printf("VALUE is : %d\n", print_list->value);
-        // printf("INDEX is : %d\n", print_list->index);
+        printf("INDEX is : %d\n", print_list->index);
         print_list = print_list->next;
     }
 }
@@ -185,7 +185,6 @@ node_list_t* push_src_to_dst(node_list_t** src, node_list_t* dst) {
     node_list_t* tmp;
 
     tmp = NULL;
-    // printf("Our node index is : %d\nOur node value is : %d\n", (*src)->index, (*src)->value);
     if ((*src)) {
         printf("--- Pushing value from list A to list B ---\n");
         if (!(current = (node_list_t*)malloc(sizeof(node_list_t)))) {
@@ -204,7 +203,7 @@ node_list_t* push_src_to_dst(node_list_t** src, node_list_t* dst) {
             dprintf(1, "debug1\n");
             (*src) = tmp->next;
         } else {
-            // printf("debug2\n");
+            printf("debug2\n");
             (*src) = NULL;
         }
         free(tmp);
@@ -226,13 +225,9 @@ node_list_t* push_src_to_dst(node_list_t** src, node_list_t* dst) {
         printf("--- Cannot push value because SRC is empty ---\n");
         return dst;
     }
-    // printf("Our node index is : %d\nOur node value is : %d\n", (*src)->index, (*src)->value);
 }
 
 int list_is_sorted(node_list_t* current) {
-    // node_list_t* current;
-
-    // current = head;
     while (current && current->next) {
 
         if(current->next->value < current->value) {
@@ -354,18 +349,14 @@ int main(int argc, char **argv) {
     tail = NULL;
     head = NULL;
     swap = NULL;
-    // ft_putchar('a');
     if (argc < 2)
         return 0;
     init_linked_list(&tail);
     tail->value = atoi(argv[i++]);
-    // init_linked_list(&swap);
     
     head = tail;
-    // print_list(tail);
     while (argv[i]) {
         // printf("argument %d = %d\n", i, atoi(argv[i]));
-        // head = push_list_reverse(head, atoi(argv[i]), i == argc - 1 ? 1 : 0);
         tail = push_list(tail, atoi(argv[i]));
         tail->index = i - 1;
         i++;
